@@ -1,6 +1,3 @@
-#include "liblvgl/core/lv_obj.h"
-#include "liblvgl/core/lv_obj_style.h"
-#include "liblvgl/font/lv_font.h"
 #include "main.h"  // IWYU pragma: keep
 
 int mogo1;
@@ -57,15 +54,17 @@ void updatepath() {
 	vector<std::string> singles{"left bottom ring", "mid top ring", "right bottom ring"};
 	vector<std::string> doubles{"left corner", "right corner"};
 
-	lv_label_set_text_fmt(AutonBaseInfoTxt, "Team: %s\nCorner: %s\nMogo 1: %d\nMogo 2: %d\nG.Rush: %s\nA.Stke: %s\nStart pos: %d inches", (useredblu == true ? "Red" : "Blue"),
-						  (useposneg == true ? "Neg" : "Pos"), finmogo1, finmogo2, (usegoalrush == true ? "On" : "Off"),
-						  (allianceringbuilder == true ? "On" : "Off"), usegoalrush == true ? (useredblu == useposneg ? 120 : 24) : (useredblu == useposneg ? 96 : 48));
+	lv_label_set_text_fmt(AutonBaseInfoTxt, "Team: %s\nCorner: %s\nMogo 1: %d\nMogo 2: %d\nG.Rush: %s\nA.Stke: %s\nStart pos: %d inches",
+						  (useredblu == true ? "Red" : "Blue"), (useposneg == true ? "Neg" : "Pos"), finmogo1, finmogo2, (usegoalrush == true ? "On" : "Off"),
+						  (allianceringbuilder == true ? "On" : "Off"),
+						  usegoalrush == true ? (useredblu == useposneg ? 120 : 24) : (useredblu == useposneg ? 96 : 48));
 
 	if(usegoalrush == true) modules.push_back("goal rush");
 	if(allianceringbuilder == true) modules.push_back("alliance stake");
 
 	if(usefinmogo1 > 0) {
-		modules.push_back(usegoalrush == true ? (useredblu == useposneg ? "regrab goal rush right" : "regrab goal rush left") : (useredblu == useposneg ? "right mogo" : "left mogo"));
+		modules.push_back(usegoalrush == true ? (useredblu == useposneg ? "regrab goal rush right" : "regrab goal rush left") :
+												(useredblu == useposneg ? "right mogo" : "left mogo"));
 		setside = !(useredblu == useposneg);
 		usemidtwo = useredblu == useposneg ? !setside : setside;
 		for(int ringscore = 0; ringscore < usefinmogo1 - (allianceringbuilder == true ? 0 : 1); ringscore++) {
@@ -173,14 +172,15 @@ static void specify(lv_event_t *e) {
 	updatepath();
 }
 
-static void getinfo(lv_event_t * e) {
-	lv_obj_t * target = lv_event_get_current_target(e);
-	lv_obj_t * autonbuildinfo = lv_msgbox_create(NULL, (target == AutonBaseInfo ? "selection info:" : "path info:"), lv_label_get_text(target == AutonBaseInfo ? AutonBaseInfoTxt : AutonPathInfoTxt), NULL, true);
+static void getinfo(lv_event_t *e) {
+	lv_obj_t *target = lv_event_get_current_target(e);
+	lv_obj_t *autonbuildinfo = lv_msgbox_create(NULL, (target == AutonBaseInfo ? "selection info:" : "path info:"),
+												lv_label_get_text(target == AutonBaseInfo ? AutonBaseInfoTxt : AutonPathInfoTxt), NULL, true);
 	lv_obj_add_style(autonbuildinfo, &styletextbuilder, LV_PART_MAIN);
 	lv_obj_add_style(lv_msgbox_get_close_btn(autonbuildinfo), &styletextbuilder, LV_PART_MAIN);
 
 	lv_obj_set_style_border_opa(lv_msgbox_get_close_btn(autonbuildinfo), 0, LV_PART_MAIN);
-	
+
 	lv_obj_set_style_text_font(lv_msgbox_get_close_btn(autonbuildinfo), &lv_font_montserrat_20, LV_PART_MAIN);
 	lv_obj_set_style_text_font(autonbuildinfo, &pros_font_dejavu_mono_18, LV_PART_MAIN);
 

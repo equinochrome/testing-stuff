@@ -182,33 +182,48 @@ void autonomous() {
 
 	// autonomous consistency
 	if(lv_obj_get_parent(pageswitch) == autobuilder) {
-		chassis.odom_pose_set({usegoalrush == true ? (useredblu == useposneg ? 120_in : 24_in) : (useredblu == useposneg ? 96_in : 48_in), 21_in, usegoalrush == true ? 0_deg : 180_deg});
+		chassis.odom_pose_set({usegoalrush == true ? (useredblu == useposneg ? 120_in : 24_in) : (useredblu == useposneg ? 96_in : 48_in), 21_in,
+							   usegoalrush == true ? 0_deg : 180_deg});
+		cout << util::to_string_with_precision(chassis.odom_x_get()) << endl;
 		for(int module_it = 0; module_it < modules.size(); module_it++) {
 			if(modules[module_it] == "goal rush")
+				// cout << "goal_rush" << endl;
 				goal_rush();
 			else if(modules[module_it] == "alliance stake")
+				// cout << "alliancestake" << endl;
 				alliancestake();
 			else if(modules[module_it] == "regrab goal rush")
+				// cout << "gr_mogo" << endl;
 				gr_mogo();
 			else if(modules[module_it] == "left mogo")
+				// cout << "left_mogo" << endl;
 				left_mogo();
 			else if(modules[module_it] == "right mogo")
+				// cout << "right_mogo" << endl;
 				right_mogo();
 			else if(modules[module_it] == "left corner")
+				// cout << "left_corner" << endl;
 				left_corner();
 			else if(modules[module_it] == "right corner")
+				// cout << "right_corner" << endl;
 				right_corner();
 			else if(modules[module_it] == "red mid two")
+				// cout << "red_ring_rush" << endl;
 				red_ring_rush();
 			else if(modules[module_it] == "blue mid two")
+				// cout << "blue_ring_rush" << endl;
 				blue_ring_rush();
 			else if(modules[module_it] == "left bottom ring")
+				// cout << "left_btm_ring" << endl;
 				left_btm_ring();
 			else if(modules[module_it] == "mid top ring")
+				// cout << "mid_top_ring" << endl;
 				mid_top_ring();
 			else if(modules[module_it] == "right bottom ring")
+				// cout << "right_btm_ring" << endl;
 				right_btm_ring();
 			else if(modules[module_it] == "ladder")
+				// cout << "ladder" << endl;
 				ladder();
 		}
 	} else {
@@ -217,7 +232,8 @@ void autonomous() {
 			jautonrun();
 		}
 	}
-	lv_scr_load(motortemps);
+	scrpage = 0;
+	lv_event_send(pageswitch, LV_EVENT_CLICKED, NULL);
 	// ez::as::auton_selector.selected_auton_call();  // Calls selected auton from
 	// autonomous selector
 }

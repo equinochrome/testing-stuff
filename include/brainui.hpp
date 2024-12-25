@@ -14,6 +14,7 @@ extern lv_obj_t* ringind;
 
 extern vector<lv_color32_t> colortable;
 extern bool noselection;
+extern int scrpage;
 
 namespace jas {
 class jasauton {

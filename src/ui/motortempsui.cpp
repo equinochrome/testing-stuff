@@ -1,4 +1,3 @@
-#include "liblvgl/extra/widgets/msgbox/lv_msgbox.h"
 #include "main.h"  // IWYU pragma: keep
 
 float temp = 0;
@@ -24,9 +23,8 @@ static void gettemp(lv_event_t *e) {
 
 static void tempmore(lv_event_t *e) {
 	const char *getinfo = (char *)lv_event_get_user_data(e);
-	std::string info = std::to_string(motorbar[*getinfo].motor.get_temperature()) + "°C";
-	std::string name = motorbar[*getinfo].name + " temperature:\n";
-	motorinfo = lv_msgbox_create(NULL, name.c_str(), info.c_str(), NULL, true);
+	motorinfo = lv_msgbox_create(NULL, (motorbar[*getinfo].name + " temperature:").c_str(),
+								 (std::to_string(motorbar[*getinfo].motor.get_temperature()) + "°C").c_str(), NULL, true);
 	lv_obj_add_style(lv_msgbox_get_close_btn(motorinfo), &stylemotor, LV_PART_MAIN);
 	lv_obj_add_style(motorinfo, &stylemotor, LV_PART_MAIN);
 	lv_obj_set_style_text_font(motorinfo, &lv_font_montserrat_48, LV_PART_MAIN);
