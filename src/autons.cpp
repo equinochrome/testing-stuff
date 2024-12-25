@@ -1,9 +1,4 @@
-#include "liblvgl/core/lv_obj.h"
-#include "liblvgl/core/lv_obj_style.h"
-#include "liblvgl/core/lv_obj_tree.h"
-#include "liblvgl/lv_api_map.h"
-#include "liblvgl/widgets/lv_label.h"
-#include "main.h"
+#include "main.h"  // IWYU pragma: keep
 
 /////
 // For installation, upgrading, documentations, and tutorials, check out our
@@ -20,62 +15,61 @@ const int GRAB_MOGO = 55;
 // Constants
 ///
 void default_constants() {
-  // P, I, D, and Start I
-  // https://ez-robotics.github.io/EZ-Template/tutorials/tuning_constants
-  chassis.pid_drive_constants_set(20.0, 0.0, 100.0);         // Fwd/rev constants, used for odom and non odom motions
-  chassis.pid_heading_constants_set(11.0, 0.0, 20.0);        // Holds the robot straight while going forward without odom
-  chassis.pid_turn_constants_set(3.0, 0.05, 20.0, 15.0);     // Turn in place constants
-  chassis.pid_swing_constants_set(6.0, 0.0, 65.0);           // Swing constants
-  chassis.pid_odom_angular_constants_set(6.5, 0.0, 52.5);    // Angular control for odom motions
-  chassis.pid_odom_boomerang_constants_set(5.8, 0.0, 32.5);  // Angular control for boomerang motions
+	// P, I, D, and Start I
+	// https://ez-robotics.github.io/EZ-Template/tutorials/tuning_constants
+	chassis.pid_drive_constants_set(20.0, 0.0, 100.0);		   // Fwd/rev constants, used for odom and non odom motions
+	chassis.pid_heading_constants_set(11.0, 0.0, 20.0);		   // Holds the robot straight while going forward without odom
+	chassis.pid_turn_constants_set(3.0, 0.05, 20.0, 15.0);	   // Turn in place constants
+	chassis.pid_swing_constants_set(6.0, 0.0, 65.0);		   // Swing constants
+	chassis.pid_odom_angular_constants_set(6.5, 0.0, 52.5);	   // Angular control for odom motions
+	chassis.pid_odom_boomerang_constants_set(5.8, 0.0, 32.5);  // Angular control for boomerang motions
 
-  // Exit conditions
-  // https://ez-robotics.github.io/EZ-Template/tutorials/tuning_exit_conditions
-  chassis.pid_turn_exit_condition_set(80_ms, 3_deg, 250_ms, 7_deg, 500_ms, 500_ms);
-  chassis.pid_swing_exit_condition_set(80_ms, 3_deg, 250_ms, 7_deg, 500_ms, 500_ms);
-  chassis.pid_drive_exit_condition_set(80_ms, 1_in, 250_ms, 3_in, 500_ms, 500_ms);
-  chassis.pid_odom_turn_exit_condition_set(90_ms, 3_deg, 250_ms, 7_deg, 500_ms, 750_ms);
-  chassis.pid_odom_drive_exit_condition_set(90_ms, 1_in, 250_ms, 3_in, 500_ms, 750_ms);
-  chassis.pid_turn_chain_constant_set(3_deg);
-  chassis.pid_swing_chain_constant_set(5_deg);
-  chassis.pid_drive_chain_constant_set(3_in);
+	// Exit conditions
+	// https://ez-robotics.github.io/EZ-Template/tutorials/tuning_exit_conditions
+	chassis.pid_turn_exit_condition_set(80_ms, 3_deg, 250_ms, 7_deg, 500_ms, 500_ms);
+	chassis.pid_swing_exit_condition_set(80_ms, 3_deg, 250_ms, 7_deg, 500_ms, 500_ms);
+	chassis.pid_drive_exit_condition_set(80_ms, 1_in, 250_ms, 3_in, 500_ms, 500_ms);
+	chassis.pid_odom_turn_exit_condition_set(90_ms, 3_deg, 250_ms, 7_deg, 500_ms, 750_ms);
+	chassis.pid_odom_drive_exit_condition_set(90_ms, 1_in, 250_ms, 3_in, 500_ms, 750_ms);
+	chassis.pid_turn_chain_constant_set(3_deg);
+	chassis.pid_swing_chain_constant_set(5_deg);
+	chassis.pid_drive_chain_constant_set(3_in);
 
-  // Slew constants
-  // https://ez-robotics.github.io/EZ-Template/tutorials/slew_constants
-  chassis.slew_turn_constants_set(3_deg, 70);
-  chassis.slew_drive_constants_set(7_in, 70);
-  chassis.slew_swing_constants_set(3_in, 80);
+	// Slew constants
+	// https://ez-robotics.github.io/EZ-Template/tutorials/slew_constants
+	chassis.slew_turn_constants_set(3_deg, 70);
+	chassis.slew_drive_constants_set(7_in, 70);
+	chassis.slew_swing_constants_set(3_in, 80);
 
-  // The amount that turns are prioritized over driving in odom motions
-  // - if you have tracking wheels, you can run this higher.  1.0 is the max
-  chassis.odom_turn_bias_set(0.9);
+	// The amount that turns are prioritized over driving in odom motions
+	// - if you have tracking wheels, you can run this higher.  1.0 is the max
+	chassis.odom_turn_bias_set(0.9);
 
-  chassis.odom_look_ahead_set(7_in);           // This is how far ahead in the path the robot looks at
-  chassis.odom_boomerang_distance_set(16_in);  // This sets the maximum distance away from target that the carrot point can be
-  chassis.odom_boomerang_dlead_set(0.625);     // This handles how aggressive the end of boomerang motions are
+	chassis.odom_look_ahead_set(7_in);			 // This is how far ahead in the path the robot looks at
+	chassis.odom_boomerang_distance_set(16_in);	 // This sets the maximum distance away from target that the carrot point can be
+	chassis.odom_boomerang_dlead_set(0.625);	 // This handles how aggressive the end of boomerang motions are
 
-  chassis.pid_angle_behavior_set(ez::shortest);  // Changes the default behavior for turning, this defaults it to the shortest path there
+	chassis.pid_angle_behavior_set(ez::shortest);  // Changes the default behavior for turning, this defaults it to the shortest path there
 }
 
 int rizzler = 1;
 lv_obj_t *gyat;
 
 void testtestest() {
-  /*printf("test aaaaa");
-	gyat = lv_label_create(autoselector);
-	rizzler++;
-	lv_obj_set_style_bg_color(gyat, lv_color_hex(0x42f548), LV_PART_MAIN);
-	lv_obj_set_size(gyat, 20, 20);
-	lv_obj_set_scrollbar_mode(gyat, LV_SCROLLBAR_MODE_OFF);
-	lv_obj_set_style_bg_opa(gyat, 255, LV_PART_MAIN);
-	rizzler%2 == 0 ? lv_obj_set_style_bg_color(gyat, lv_color_hex(0x42f548), LV_PART_MAIN) : lv_obj_set_style_bg_color(gyat, lv_color_hex(0x190f39), LV_PART_MAIN);
-	lv_label_set_text_fmt(gyat, "%d", rizzler);
-	lv_obj_move_foreground(gyat);*/
+	/*printf("test aaaaa");
+	  gyat = lv_label_create(autoselector);
+	  rizzler++;
+	  lv_obj_set_style_bg_color(gyat, lv_color_hex(0x42f548), LV_PART_MAIN);
+	  lv_obj_set_size(gyat, 20, 20);
+	  lv_obj_set_scrollbar_mode(gyat, LV_SCROLLBAR_MODE_OFF);
+	  lv_obj_set_style_bg_opa(gyat, 255, LV_PART_MAIN);
+	  rizzler%2 == 0 ? lv_obj_set_style_bg_color(gyat, lv_color_hex(0x42f548), LV_PART_MAIN) : lv_obj_set_style_bg_color(gyat, lv_color_hex(0x190f39),
+	  LV_PART_MAIN); lv_label_set_text_fmt(gyat, "%d", rizzler); lv_obj_move_foreground(gyat);*/
 	std::cout << "running" << std::endl;
-  chassis.odom_pose_set({10_in, 0_in, 0_deg});
-  chassis.pid_odom_set(20_in, DRIVE_SPEED, false);
-  chassis.pid_odom_set({{{0_in, 40_in}, fwd, 110}, {{20_in, 60_in}, fwd, 110}});
-  chassis.pid_wait();
+	chassis.odom_pose_set({10_in, 0_in, 0_deg});
+	chassis.pid_odom_set(20_in, DRIVE_SPEED, false);
+	chassis.pid_odom_set({{{0_in, 40_in}, fwd, 110}, {{20_in, 60_in}, fwd, 110}});
+	chassis.pid_wait();
 }
 
 void move_forward() { chassis.pid_drive_set(5_in, DRIVE_SPEED, true); }
@@ -117,14 +111,14 @@ void move_forward() { chassis.pid_drive_set(5_in, DRIVE_SPEED, true); }
 }*/
 void testautonRed() {
 	printf("test aaaaa");
-	pros::Task ringsort(ringsensTask, (void*)"R");
+	pros::Task ringsort(ringsensTask, (void *)"0");
 	intake.move(-127);
 	chassis.pid_wait();
 }
 
 void testcolorsortRed() {
 	printf("test aaaaa");
-	pros::Task ringsort(ringsensTask, (void*)"R");
+	pros::Task ringsort(ringsensTask, (void *)"0");
 	intake.move(-127);
 	chassis.pid_drive_set(60_in, 32, false);
 	chassis.pid_wait();
@@ -138,14 +132,14 @@ void testcolorsortRed() {
 
 void testautonBlue() {
 	printf("test aaaaa");
-	pros::Task ringsort(ringsensTask, (void*)"B");
+	pros::Task ringsort(ringsensTask, (void *)"1");
 	mogomech.set(true);
 	chassis.pid_wait();
 }
 
 void testcolorsortBlue() {
 	printf("test aaaaa");
-	pros::Task ringsort(ringsensTask, (void*)"B");
+	pros::Task ringsort(ringsensTask, (void *)"1");
 	intake.move(-127);
 	chassis.pid_drive_set(60_in, 32, false);
 	chassis.pid_wait();
@@ -158,7 +152,7 @@ void testcolorsortBlue() {
 }
 
 void red_50WP() {
-	// pros::Task ringsort(ringsensTask, (void*)"R");
+	// pros::Task ringsort(ringsensTask, (void*)"0");
 	// Get mogo and score 2 rings
 	mogomech.set(false);
 	chassis.pid_drive_set(-34_in, 75, true);
@@ -187,7 +181,7 @@ void red_50WP() {
 }
 
 void red_4ring() {
-	// pros::Task ringsort(ringsensTask, (void*)"R");
+	// pros::Task ringsort(ringsensTask, (void*)"0");
 	// wallmech.move_relative(-100, -127);
 	// score on allaince stake
 	chassis.pid_drive_set(-15_in, DRIVE_SPEED, false);
@@ -237,7 +231,7 @@ void red_4ring() {
 }
 
 void red_4greed() {
-	// pros::Task ringsort(ringsensTask, (void*)"R");s
+	// pros::Task ringsort(ringsensTask, (void*)"0");s
 	// wallmech.move_relative(-100, -127);
 	chassis.pid_drive_set(-30_in, 60, true);
 	chassis.pid_wait_until(-27.5_in);
@@ -270,7 +264,7 @@ void red_4greed() {
 }
 
 void red_6ring() {
-	// pros::Task ringsort(ringsensTask, (void*)"R");
+	// pros::Task ringsort(ringsensTask, (void*)"0");
 	chassis.pid_drive_set(-30_in, 60, true);
 	chassis.pid_wait_until(-27_in);
 	mogomech.set(true);
@@ -357,7 +351,7 @@ void red_6ring() {
 }*/
 
 void blue_50WP() {
-	// 	pros::Task ringsort(ringsensTask, (void*)"B");
+	// 	pros::Task ringsort(ringsensTask, (void*)"1");
 	// Get mogo and score 2 rings
 	mogomech.set(false);
 	chassis.pid_drive_set(-35_in, 60, true);
@@ -387,7 +381,7 @@ void blue_50WP() {
 }
 
 void blue_4ring() {
-	// pros::Task ringsort(ringsensTask, (void*)"R");
+	// pros::Task ringsort(ringsensTask, (void*)"0");
 	// wallmech.move_relative(-100, -127);
 	// score on allaince stake
 	chassis.pid_drive_set(-16_in, DRIVE_SPEED, false);
@@ -437,7 +431,7 @@ void blue_4ring() {
 }
 
 void blue_4greed() {
-	// pros::Task ringsort(ringsensTask, (void*)"R");
+	// pros::Task ringsort(ringsensTask, (void*)"0");
 	// wallmech.move_relative(-100, -127);
 	chassis.pid_drive_set(-30_in, 60, true);
 	chassis.pid_wait_until(-27.5_in);
@@ -470,7 +464,7 @@ void blue_4greed() {
 }
 
 void blue_6ring() {
-	// pros::Task ringsort(ringsensTask, (void*)"R");
+	// pros::Task ringsort(ringsensTask, (void*)"0");
 	// wallmech.move_relative(-100, -127);
 	chassis.pid_drive_set(-30_in, 75, true);
 	chassis.pid_wait_until(-28_in);

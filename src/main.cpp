@@ -1,8 +1,5 @@
 #include "main.h"
 
-#include "autonbuilder.hpp"
-#include "autons.hpp"
-
 // big money $_$
 /////
 // For installation, upgrading, documentations, and tutorials, check out our
@@ -23,8 +20,8 @@ ez::Drive chassis(
 //  `2.75` is the wheel diameter
 //  `4.0` is the distance from the center of the wheel to the center of the robot
 // ez::tracking_wheel right_tracker({-'A', -'B'}, 2.75, 4.0);  // ADI Encoders
-ez::tracking_wheel vertical_tracker(16, 2, 0.7);	// Rotation sensors
-ez::tracking_wheel horiz_tracker(10, 2, -0.5);
+ez::tracking_wheel vertical_tracker(16, 2.03856, 0.7);	// Rotation sensors
+ez::tracking_wheel horiz_tracker(10, 2.03856, -0.5);
 // list of motors to get temperature
 pros::Motor intake1(4);
 pros::Motor intake2(6);
@@ -36,9 +33,8 @@ pros::Motor driveright1(17);
 pros::Motor driveright2(18);
 pros::Motor driveright3(20);
 
-vector<jas::motors::motordata> motorbar{{0, intake1, "intake 1"},	  {1, driveleft1, "drive l1"},	{2, driveleft2, "drive l2"},
-										{3, driveleft3, "drive l3"},  {4, intake2, "intake 2"},		{5, driveright1, "drive r1"},
-										{6, driveright2, "drive r2"}, {7, driveright3, "drive r3"}, {8, wallstake, "wallmech"}};
+vector<jas::motors::motordata> motorbar{{intake1, "intake 1"}, {driveleft1, "drive l1"},  {driveleft2, "drive l2"},	 {driveleft3, "drive l3"},
+										{intake2, "intake 2"}, {driveright1, "drive r1"}, {driveright2, "drive r2"}, {driveright3, "drive r3"}};
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -98,37 +94,27 @@ void initialize() {
 		 jas::jasauton(testtestest, 2, 2, "Odom test", "Simple test to see if odometry works", 3, 2, true)
 		 });*/
 
-	 //auton builder modules, for testing
+	// auton builder modules, for testing
 	j_auton_selector.jautonpopulate(
-			{jas::jasauton(testautonbuilder, 2, 2, "Test auton modules", "Test auton builder modules manually", 4, 0, true),
-			 jas::jasauton(red_midneg_2ring, 0, 0, "Red ring cluster module", "Red negative corner POI, cluster of 2 rings near mid", 2, 0, false),
-			 jas::jasauton(red_neg_btmringstack, 0, 0, "Red negative bottom ring module", "Red negative corner POI, bottom ring of ring stack", 1, 0, false),
-			 jas::jasauton(red_neg_mogo, 0, 0, "Red negative mogo module", "Red negative corner POI, closest mogo", 0, 0, false),
-			 jas::jasauton(red_neg_corner, 0, 0, "Red negative corner module", "Red negative corner POI, 2 ring corner rush", 2, 0, false),
+		{jas::jasauton(testautonbuilder, 2, 2, "Test auton modules", "Test auton builder modules manually", 4, 0, true),
+		 jas::jasauton(goal_rush, 2, 2, "Goal rush module", "Positive corner POI, goal rush mogo", 0, 0, false),
+		 jas::jasauton(alliancestake, 2, 2, "Alliance stake module", "Mutual POI, alliance stake score", 0, 0, true),
 
-			 jas::jasauton(red_mid_topringstack, 0, 2, "Red mid 1 top ring module", "Red alliance POI, top ring of ring stack", 1, 0, false),
-			 jas::jasauton(red_alliancestake, 0, 2, "Red alliance stake module", "Red alliance POI, alliance stake score", 0, 0, true),
+		 jas::jasauton(left_mogo, 2, 2, "Left mogo module", "Left side POI, closest mogo", 0, 0, false),
+		 jas::jasauton(gr_mogo, 2, 2, "Left mogo module", "Left side POI, closest mogo", 0, 0, false),
+		 jas::jasauton(right_mogo, 2, 2, "Right mogo module", "Right side POI, closest mogo", 0, 0, false),
 
-			 jas::jasauton(red_midpos_mogo, 0, 1, "Red goal rush mogo module", "Red positive corner POI, goal rush mogo", 0, 0, false),
-			 jas::jasauton(red_pos_btmringstack, 0, 1, "Red positive bottom ring module", "Red positive corner POI, bottom ring of ring stack", 1, 0, false),
-			 jas::jasauton(red_pos_mogo, 0, 1, "Red positive mogo module", "Red positive corner POI, closest mogo", 0, 0, false),
-			 jas::jasauton(red_pos_corner, 0, 1, "Red positive corner module", "Red positive corner POI, 2 ring corner rush", 2, 0, false),
+		 jas::jasauton(left_corner, 2, 2, "Left corner module", "Left side POI, 2 ring corner rush", 2, 0, false),
+		 jas::jasauton(right_corner, 2, 2, "Right corner module", "Right side POI, 2 ring corner rush", 2, 0, false),
 
-			 jas::jasauton(ladder, 2, 0, "Ladder module", "POI for the central ladder, always goes to mid", 6, 6, true),
+		 jas::jasauton(red_ring_rush, 0, 2, "Red ring rush module", "Red alliance POI, cluster of 2 rings near mid", 2, 0, false),
+		 jas::jasauton(blue_ring_rush, 1, 2, "Blue ring rush module", "Blue alliance POI, cluster of 2 rings near mid", 2, 0, false),
 
-			 jas::jasauton(blue_midneg_2ring, 1, 0, "Blue ring cluster module", "Blue negative corner POI, cluster of 2 rings near mid", 2, 0, false),
-			 jas::jasauton(blue_neg_btmringstack, 1, 0, "Blue negative bottom ring module", "Blue negative corner POI, bottom ring of ring stack", 1, 0, false),
-			 jas::jasauton(blue_neg_mogo, 1, 0, "Blue negative mogo module", "Blue negative corner POI, closest mogo", 0, 0, false),
-			 jas::jasauton(blue_neg_corner, 1, 0, "Blue negative corner module", "Blue negative corner POI, 2 ring corner rush", 2, 0, false),
+		 jas::jasauton(left_btm_ring, 2, 2, "Left bottom ring module", "Left side POI, bottom ring of ring stack", 1, 0, false),
+		 jas::jasauton(mid_top_ring, 2, 2, "Mid top ring module", "Mutual POI, top ring of ring stack", 1, 0, false),
+		 jas::jasauton(right_btm_ring, 2, 2, "Right bottom ring module", "Right side POI, bottom ring of ring stack", 1, 0, false),
 
-			 jas::jasauton(blue_mid_topringstack, 1, 2, "Blue mid 1 top ring module", "Blue alliance POI, top ring of ring stack", 1, 0, false),
-			 jas::jasauton(blue_alliancestake, 1, 2, "Blue alliance stake module", "Blue alliance POI, alliance stake score", 0, 0, true),
-
-			 jas::jasauton(blue_midpos_mogo, 1, 1, "Blue goal rush mogo module", "Blue positive corner POI, goal rush mogo", 0, 0, false),
-			 jas::jasauton(blue_pos_btmringstack, 1, 1, "Blue positive bottom ring module", "Blue positive corner POI, bottom ring of ring stack", 1, 0, false),
-			 jas::jasauton(blue_pos_mogo, 1, 1, "Blue positive mogo module", "Blue positive corner POI, closest mogo", 0, 0, false),
-			 jas::jasauton(blue_pos_corner, 1, 1, "Blue positive corner module", "Blue positive corner POI, 2 ring corner rush", 2, 0, false)});
-		
+		 jas::jasauton(ladder, 2, 2, "Ladder module", "POI for the central ladder, always goes to mid", 6, 6, true)});
 
 	// Initialize chassis and auton selector
 	chassis.initialize();
@@ -138,7 +124,6 @@ void initialize() {
 	master.rumble(".");
 	pros::Task tempcheckcontroller(tempcheckctrl);
 	pros::Task colordetection(colorDetect);
-	pros::Task colorprobing(colorProbe);
 }
 
 /**
@@ -161,6 +146,7 @@ void disabled() {
  */
 void competition_initialize() {
 	// . . .
+	lv_scr_load(autobuilder);
 }
 
 /**
@@ -175,11 +161,11 @@ void competition_initialize() {
  * from where it left off.
  */
 void autonomous() {
-	chassis.pid_targets_reset();				 // Resets PID targets to 0
-	chassis.drive_imu_reset();					 // Reset gyro position to 0
-	chassis.drive_sensor_reset();				 // Reset drive sensors to 0
-	chassis.odom_pose_set({0_in, 0_in, 0_deg});	 // Set the current position, you can start at a specific position with this
-	chassis.drive_brake_set(MOTOR_BRAKE_HOLD);	 // Set motors to hold.  This helps autonomous consistency
+	chassis.pid_targets_reset();				// Resets PID targets to 0
+	chassis.drive_imu_reset();					// Reset gyro position to 0
+	chassis.drive_sensor_reset();				// Reset drive sensors to 0
+	chassis.odom_xyt_set(0_in, 0_in, 0_deg);	// Set the current position, you can start at a specific position with this
+	chassis.drive_brake_set(MOTOR_BRAKE_HOLD);	// Set motors to hold.  This helps autonomous consistency
 
 	/*
 	Odometry and Pure Pursuit are not magic
@@ -195,10 +181,43 @@ void autonomous() {
 	*/
 
 	// autonomous consistency
-	if(noselection == false) {
-		printf("Running auton");
-		jautonrun();
+	if(lv_obj_get_parent(pageswitch) == autobuilder) {
+		chassis.odom_pose_set({usegoalrush == true ? (useredblu == useposneg ? 120_in : 24_in) : (useredblu == useposneg ? 96_in : 48_in), 21_in, usegoalrush == true ? 0_deg : 180_deg});
+		for(int module_it = 0; module_it < modules.size(); module_it++) {
+			if(modules[module_it] == "goal rush")
+				goal_rush();
+			else if(modules[module_it] == "alliance stake")
+				alliancestake();
+			else if(modules[module_it] == "regrab goal rush")
+				gr_mogo();
+			else if(modules[module_it] == "left mogo")
+				left_mogo();
+			else if(modules[module_it] == "right mogo")
+				right_mogo();
+			else if(modules[module_it] == "left corner")
+				left_corner();
+			else if(modules[module_it] == "right corner")
+				right_corner();
+			else if(modules[module_it] == "red mid two")
+				red_ring_rush();
+			else if(modules[module_it] == "blue mid two")
+				blue_ring_rush();
+			else if(modules[module_it] == "left bottom ring")
+				left_btm_ring();
+			else if(modules[module_it] == "mid top ring")
+				mid_top_ring();
+			else if(modules[module_it] == "right bottom ring")
+				right_btm_ring();
+			else if(modules[module_it] == "ladder")
+				ladder();
+		}
+	} else {
+		if(noselection == false) {
+			printf("Running auton");
+			jautonrun();
+		}
 	}
+	lv_scr_load(motortemps);
 	// ez::as::auton_selector.selected_auton_call();  // Calls selected auton from
 	// autonomous selector
 }

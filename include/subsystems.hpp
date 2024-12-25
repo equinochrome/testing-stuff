@@ -1,7 +1,7 @@
 #pragma once
 
-#include "EZ-Template/api.hpp"
-#include "api.h"
+#include "EZ-Template/api.hpp"  // IWYU pragma: keep
+#include "api.h"  // IWYU pragma: keep
 
 // Motors, sensors, etc
 inline pros::MotorGroup intake({-6, 4});
@@ -15,8 +15,8 @@ inline pros::Optical ringsens(8);
 
 // Functions
 void setIntake();
+void setWall();
 void setMogo();
 void setRedirect();
-void setWall();
-bool shift();
 void setdoinker();
+bool shift();

@@ -1,4 +1,4 @@
-#include "main.h"
+#include "main.h"  // IWYU pragma: keep
 
 void setIntake() {
 	if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
@@ -10,8 +10,6 @@ void setIntake() {
 	}
 }
 
-void setMogo() { mogomech.button_toggle(master.get_digital(pros::E_CONTROLLER_DIGITAL_B)); }
-
 void setWall() {
 	wallmech.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
@@ -22,22 +20,11 @@ void setWall() {
 		wallmech.brake();
 	}
 }
-// temp code for test or something idk
-void setRedirect() {
-	indexer.button_toggle(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN));
-	/*
-	//if trigger button and optical sensor (red or blue) are true, then set clamp after [x] ms
-	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-	  if (intakeColor == "red" || intakeColor == "blue") {
-		indexer.set(true);
-	  }
-	}
-	if (!master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-	  indexer.set(false);
-	}
-	*/
-}
 
-bool shift() { return master.get_digital(pros::E_CONTROLLER_DIGITAL_R1); }
+void setMogo() { mogomech.button_toggle(master.get_digital(pros::E_CONTROLLER_DIGITAL_B)); }
+
+void setRedirect() { indexer.button_toggle(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)); }
 
 void setdoinker() { doinker.button_toggle(master.get_digital(pros::E_CONTROLLER_DIGITAL_A)); }
+
+bool shift() { return master.get_digital(pros::E_CONTROLLER_DIGITAL_R1); }

@@ -1,21 +1,16 @@
 #pragma once
 
-#include "EZ-Template/api.hpp"
-#include "api.h"
+#include "EZ-Template/api.hpp"  // IWYU pragma: keep
+#include "api.h"  // IWYU pragma: keep
 
 void screeninit();
 void jautonrun();
-static void listupdate();
-static void clear();
-static void jautoncurate(lv_event_t* e);
-static void selectauton(lv_event_t* e);
-static void updownbtn(lv_event_t* e);
-static void pageswitchbtn(lv_event_t* e);
 
 extern lv_obj_t* autoselector;
 extern lv_obj_t* motortemps;
 extern lv_obj_t* autobuilder;
 extern lv_obj_t* pageswitch;
+extern lv_obj_t* ringind;
 
 extern vector<lv_color32_t> colortable;
 extern bool noselection;

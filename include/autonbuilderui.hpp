@@ -1,9 +1,16 @@
 #pragma once
 
-#include "EZ-Template/api.hpp"
-#include "api.h"
+#include "EZ-Template/api.hpp"  // IWYU pragma: keep
+#include "api.h"  // IWYU pragma: keep
 
-static void mogopress(lv_event_t * e);
-static void specify(lv_event_t * e);
+void updatepath();
+
+extern lv_obj_t *builderringind;
+
+extern vector<std::string> modules;
+
+extern bool useredblu;
+extern bool useposneg;
+extern bool usegoalrush;
 
 void autonbuilderinit();
