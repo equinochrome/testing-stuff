@@ -7,9 +7,9 @@ float intakeTemp;
 vector<lv_obj_t *> motorboxes{};
 vector<int> motorindex{};
 
-lv_obj_t *motorbackground;
 lv_obj_t *motorview;
 lv_obj_t *motorinfo;
+lv_obj_t *motorbackground = lv_img_create(motortemps);
 lv_obj_t *mainlabel = lv_label_create(motortemps);
 static lv_style_t stylemotor;
 
@@ -62,6 +62,8 @@ void tempcheck() {
 		lv_obj_set_size(motorview, 97, 39);
 		lv_label_set_long_mode(motorview, LV_LABEL_LONG_SCROLL);
 		lv_label_set_text_fmt(motorview, "%s", motorbar[b].name.c_str());
+		lv_obj_set_style_transform_width(motorview, 2, LV_STATE_PRESSED);
+		lv_obj_set_style_transform_height(motorview, 2, LV_STATE_PRESSED);
 		lv_obj_add_event_cb(motorview, getTemp, LV_EVENT_REFRESH, &motorindex[b]);
 		lv_obj_add_event_cb(motorview, tempMore, LV_EVENT_CLICKED, &motorindex[b]);
 		if(b != 0 && b % 4 == 0) motorrow++;
@@ -69,8 +71,7 @@ void tempcheck() {
 		motorboxes.push_back(motorview);
 	}
 
-	motorbackground = lv_img_create(motortemps);
-	lv_img_set_src(motorbackground, &brainbg);
+	lv_img_set_src(motorbackground, &brainbg);	//"S:brainbg.bin"
 	lv_obj_move_background(motorbackground);
 
 	lv_obj_add_style(mainlabel, &stylemotor, LV_PART_MAIN);

@@ -94,6 +94,7 @@ void updatepath() {
 	}
 
 	if(usefinmogo2 > 0) {
+		modules.push_back("drop mogo");
 		modules.push_back((useredblu == useposneg) == usegoalrush ? "right mogo" : "left mogo");
 		setside = !(useredblu == useposneg) == usegoalrush;
 		usemidtwo = useredblu == useposneg ? !setside : setside;
@@ -124,15 +125,14 @@ void updatepath() {
 	modules.push_back("ladder");
 
 	for(int strings = 0; strings < modules.size(); strings++) {
-		path = path.append(modules[strings]) + "\n";
+		path = path.append(strings == modules.size() - 1 ? modules[strings] : modules[strings] + "\n");
 	}
 
 	lv_label_set_text_fmt(AutonPathInfoTxt, "%s", path.c_str());
 }
 
 static void mogopress(lv_event_t *e) {
-	lv_obj_t *target = lv_event_get_target(e);
-	target == Mogo1 || target == Mogo1back ? rings = &mogo1 : rings = &mogo2;
+	lv_event_get_target(e) == Mogo1 || lv_event_get_target(e) == Mogo1back ? rings = &mogo1 : rings = &mogo2;
 	*rings = (*rings + 1) % 7;
 	lv_obj_set_size(Mogo1, 67, 108 - (18 * mogo1));
 	lv_obj_set_size(Mogo2, 67, 108 - (18 * mogo2));
@@ -174,17 +174,19 @@ static void specify(lv_event_t *e) {
 
 static void getinfo(lv_event_t *e) {
 	lv_obj_t *target = lv_event_get_current_target(e);
-	lv_obj_t *autonbuildinfo = lv_msgbox_create(NULL, (target == AutonBaseInfo ? "selection info:" : "path info:"),
+	lv_obj_t *autonbuildinfo = lv_msgbox_create(NULL, (target == AutonBaseInfo ? "selection info" : "path info"),
 												lv_label_get_text(target == AutonBaseInfo ? AutonBaseInfoTxt : AutonPathInfoTxt), NULL, true);
 	lv_obj_add_style(autonbuildinfo, &styletextbuilder, LV_PART_MAIN);
 	lv_obj_add_style(lv_msgbox_get_close_btn(autonbuildinfo), &styletextbuilder, LV_PART_MAIN);
 
 	lv_obj_set_style_border_opa(lv_msgbox_get_close_btn(autonbuildinfo), 0, LV_PART_MAIN);
 
+	lv_obj_set_style_text_font(autonbuildinfo, target == AutonBaseInfo ? &lv_font_montserrat_20 : &lv_font_montserrat_12, LV_PART_MAIN);
 	lv_obj_set_style_text_font(lv_msgbox_get_close_btn(autonbuildinfo), &lv_font_montserrat_20, LV_PART_MAIN);
-	lv_obj_set_style_text_font(autonbuildinfo, &pros_font_dejavu_mono_18, LV_PART_MAIN);
+	lv_obj_set_style_text_font(lv_msgbox_get_title(autonbuildinfo), &lv_font_montserrat_20, LV_PART_MAIN);
 
 	lv_obj_align(autonbuildinfo, LV_ALIGN_CENTER, 0, 0);
+	// autonomous(); //comment this out
 }
 
 lv_event_cb_t mogoPress = mogopress;
@@ -192,6 +194,8 @@ lv_event_cb_t Specify = specify;
 lv_event_cb_t getInfo = getinfo;
 
 void autonbuilderinit() {
+	activescreen = false;
+
 	builderoverlay = lv_img_create(autobuilder);
 	Mogo1 = lv_btn_create(autobuilder);
 	Mogo1back = lv_btn_create(autobuilder);
@@ -221,10 +225,10 @@ void autonbuilderinit() {
 	lv_style_set_text_color(&styletextbuilder, lv_color_hex(0xcfffe9));
 	lv_style_set_bg_color(&styletextbuilder, lv_color_hex(0x071808));
 	lv_style_set_bg_opa(&styletextbuilder, 255);
-	lv_style_set_text_font(&styletextbuilder, &pros_font_dejavu_mono_10);
+	lv_style_set_text_font(&styletextbuilder, &lv_font_montserrat_10);
 	lv_style_set_pad_all(&styletextbuilder, 2);
 
-	lv_img_set_src(builderoverlay, &autonbuilderoverlay);
+	lv_img_set_src(builderoverlay, &autonbuilderoverlay);  //"S:autonbuilderoverlay.bin"
 
 	lv_obj_set_pos(Mogo1, 49, 90);
 	lv_obj_set_pos(Mogo1back, 49, 90);
@@ -283,8 +287,10 @@ void autonbuilderinit() {
 	lv_obj_set_style_bg_color(Mogo2, lv_color_hex(0x5d5d5d), LV_PART_MAIN);
 	lv_obj_set_style_bg_color(AllianceRing, lv_color_hex(0x5d5d5d), LV_PART_MAIN);
 
-	lv_obj_set_style_border_width(AutonBaseInfo, 4, LV_STATE_PRESSED);
-	lv_obj_set_style_border_width(AutonPathInfo, 4, LV_STATE_PRESSED);
+	lv_obj_set_style_transform_width(AutonBaseInfo, 2, LV_STATE_PRESSED);
+	lv_obj_set_style_transform_height(AutonBaseInfo, 2, LV_STATE_PRESSED);
+	lv_obj_set_style_transform_width(AutonPathInfo, 2, LV_STATE_PRESSED);
+	lv_obj_set_style_transform_height(AutonPathInfo, 2, LV_STATE_PRESSED);
 
 	lv_obj_move_background(Mogo1back);
 	lv_obj_move_background(Mogo2back);
@@ -311,4 +317,58 @@ void autonbuilderinit() {
 	lv_event_send(RedBlu, LV_EVENT_CLICKED, NULL);
 	lv_event_send(Neg, LV_EVENT_CLICKED, NULL);
 	lv_event_send(AllianceRing, LV_EVENT_CLICKED, NULL);
+}
+
+void autocallback() {
+	chassis.odom_pose_set({usegoalrush == true ? (useredblu == useposneg ? 120_in : 24_in) : (useredblu == useposneg ? 96_in : 48_in), 21_in,
+						   usegoalrush == true ? 0_deg : 180_deg});
+	cout << util::to_string_with_precision(chassis.odom_x_get()) << endl;
+	ringsorting = pros::c::task_create(ringsensTask, useredblu ? (void *)"0" : (void *)"1", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "ring sorting");
+	for(int module_it = 0; module_it < modules.size(); module_it++) {
+		if(modules[module_it] == "goal rush")
+			// cout << "goal_rush" << endl;
+			goal_rush();
+		else if(modules[module_it] == "alliance stake")
+			// cout << "alliancestake" << endl;
+			alliancestake();
+		else if(modules[module_it] == "regrab goal rush")
+			// cout << "gr_mogo" << endl;
+			gr_mogo();
+		else if(modules[module_it] == "left mogo")
+			// cout << "left_mogo" << endl;
+			left_mogo();
+		else if(modules[module_it] == "right mogo")
+			// cout << "right_mogo" << endl;
+			right_mogo();
+		else if(modules[module_it] == "left corner")
+			// cout << "left_corner" << endl;
+			left_corner();
+		else if(modules[module_it] == "right corner")
+			// cout << "right_corner" << endl;
+			right_corner();
+		else if(modules[module_it] == "red mid two")
+			// cout << "red_ring_rush" << endl;
+			red_ring_rush();
+		else if(modules[module_it] == "blue mid two")
+			// cout << "blue_ring_rush" << endl;
+			blue_ring_rush();
+		else if(modules[module_it] == "left bottom ring")
+			// cout << "left_btm_ring" << endl;
+			left_btm_ring();
+		else if(modules[module_it] == "mid top ring")
+			// cout << "mid_top_ring" << endl;
+			mid_top_ring();
+		else if(modules[module_it] == "right bottom ring")
+			// cout << "right_btm_ring" << endl;
+			right_btm_ring();
+		else if(modules[module_it] == "ladder")
+			// cout << "ladder" << endl;
+			ladder();
+		else if(modules[module_it] == "drop mogo") {
+			// cout << "drop mogo" << endl;
+			intake.move(0);
+			mogomech.set(false);
+		}
+	}
+	pros::c::task_delete(ringsorting);
 }

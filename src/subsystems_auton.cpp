@@ -43,6 +43,7 @@ void discard() {
 void ringsensTask(void* assign) {
 	while(true) {
 		int allianceColor = ((alliancecolor*)assign)->alliance;
+		cout << ((alliancecolor*)assign)->alliance << endl;
 		if(allianceColor == intakeColor) discard();
 		pros::delay(10);
 	}

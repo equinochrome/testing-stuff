@@ -42,15 +42,17 @@
 //#include "okapi/api.hpp"
 //#include "pros/api_legacy.h"
 #include "EZ-Template/api.hpp"  // IWYU pragma: keep
+#include "ui/filesystem.h" // IWYU pragma: keep
 
 // More includes here...
 #include "autonbuilder.hpp"  // IWYU pragma: keep
-#include "autonbuilderui.hpp"  // IWYU pragma: keep
 #include "autons.hpp"  // IWYU pragma: keep
 #include "subsystems.hpp"  // IWYU pragma: keep
 #include "subsystems_auton.hpp"  // IWYU pragma: keep
-#include "brainui.hpp"  // IWYU pragma: keep
-#include "motortempsui.hpp"  // IWYU pragma: keep
+#include "ui/brainui.hpp"  // IWYU pragma: keep
+#include "ui/autonbuilderui.hpp"  // IWYU pragma: keep
+#include "ui/manualbuilderui.hpp"  // IWYU pragma: keep
+#include "ui/motortempsui.hpp"  // IWYU pragma: keep
 
 
 /**

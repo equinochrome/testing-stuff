@@ -71,7 +71,7 @@ void initialize() {
 	// pros::E_CONTROLLER_DIGITAL_A);
 
 	// Autonomous Selector using lvgl
-	/*j_auton_selector.jautonpopulate(
+	j_auton_selector.jautonpopulate(
 		{jas::jasauton(blue_50WP, 1, 1, "Blue 50% WP", "Blue 2 ring in positive corner", 2, 0, false),
 		 jas::jasauton(testautonBlue, 1, 2, "Blue test auton", "Testing for blue autons", 0, 0, false),
 		 jas::jasauton(testcolorsortRed, 1, 2, "Blue color sort test", "Testing for blue color sorting functions", 1, 5, true),
@@ -92,10 +92,10 @@ void initialize() {
 
 		 jas::jasauton(move_forward, 2, 2, "Move forward", "Drive straight forward", 0, 0, false),
 		 jas::jasauton(testtestest, 2, 2, "Odom test", "Simple test to see if odometry works", 3, 2, true)
-		 });*/
+		 });
 
 	// auton builder modules, for testing
-	j_auton_selector.jautonpopulate(
+	/*j_auton_selector.jautonpopulate(
 		{jas::jasauton(testautonbuilder, 2, 2, "Test auton modules", "Test auton builder modules manually", 4, 0, true),
 		 jas::jasauton(goal_rush, 2, 2, "Goal rush module", "Positive corner POI, goal rush mogo", 0, 0, false),
 		 jas::jasauton(alliancestake, 2, 2, "Alliance stake module", "Mutual POI, alliance stake score", 0, 0, true),
@@ -115,12 +115,11 @@ void initialize() {
 		 jas::jasauton(right_btm_ring, 2, 2, "Right bottom ring module", "Right side POI, bottom ring of ring stack", 1, 0, false),
 
 		 jas::jasauton(ladder, 2, 2, "Ladder module", "POI for the central ladder, always goes to mid", 6, 6, true)});
-
+*/
 	// Initialize chassis and auton selector
 	chassis.initialize();
+	_init_fs();
 	screeninit();
-	tempcheck();
-	autonbuilderinit();
 	master.rumble(".");
 	pros::Task tempcheckcontroller(tempcheckctrl);
 	pros::Task colordetection(colorDetect);
@@ -146,7 +145,7 @@ void disabled() {
  */
 void competition_initialize() {
 	// . . .
-	lv_scr_load(autobuilder);
+	lv_obj_set_tile(mainscreen, autobuilder, LV_ANIM_ON);
 }
 
 /**
@@ -181,58 +180,17 @@ void autonomous() {
 	*/
 
 	// autonomous consistency
-	if(lv_obj_get_parent(pageswitch) == autobuilder) {
-		chassis.odom_pose_set({usegoalrush == true ? (useredblu == useposneg ? 120_in : 24_in) : (useredblu == useposneg ? 96_in : 48_in), 21_in,
-							   usegoalrush == true ? 0_deg : 180_deg});
-		cout << util::to_string_with_precision(chassis.odom_x_get()) << endl;
-		for(int module_it = 0; module_it < modules.size(); module_it++) {
-			if(modules[module_it] == "goal rush")
-				// cout << "goal_rush" << endl;
-				goal_rush();
-			else if(modules[module_it] == "alliance stake")
-				// cout << "alliancestake" << endl;
-				alliancestake();
-			else if(modules[module_it] == "regrab goal rush")
-				// cout << "gr_mogo" << endl;
-				gr_mogo();
-			else if(modules[module_it] == "left mogo")
-				// cout << "left_mogo" << endl;
-				left_mogo();
-			else if(modules[module_it] == "right mogo")
-				// cout << "right_mogo" << endl;
-				right_mogo();
-			else if(modules[module_it] == "left corner")
-				// cout << "left_corner" << endl;
-				left_corner();
-			else if(modules[module_it] == "right corner")
-				// cout << "right_corner" << endl;
-				right_corner();
-			else if(modules[module_it] == "red mid two")
-				// cout << "red_ring_rush" << endl;
-				red_ring_rush();
-			else if(modules[module_it] == "blue mid two")
-				// cout << "blue_ring_rush" << endl;
-				blue_ring_rush();
-			else if(modules[module_it] == "left bottom ring")
-				// cout << "left_btm_ring" << endl;
-				left_btm_ring();
-			else if(modules[module_it] == "mid top ring")
-				// cout << "mid_top_ring" << endl;
-				mid_top_ring();
-			else if(modules[module_it] == "right bottom ring")
-				// cout << "right_btm_ring" << endl;
-				right_btm_ring();
-			else if(modules[module_it] == "ladder")
-				// cout << "ladder" << endl;
-				ladder();
-		}
-	} else {
+	if(lv_tileview_get_tile_act(mainscreen) == autobuilder)
+		autocallback();
+	else if(lv_tileview_get_tile_act(mainscreen) == manbuilder)
+		mancallback();
+	else {
 		if(noselection == false) {
 			printf("Running auton");
 			jautonrun();
 		}
 	}
-	scrpage = 0;
+	scrpage = 2;
 	lv_event_send(pageswitch, LV_EVENT_CLICKED, NULL);
 	// ez::as::auton_selector.selected_auton_call();  // Calls selected auton from
 	// autonomous selector
@@ -343,7 +301,7 @@ void opcontrol() {
 		setWall();
 		setdoinker();
 
-		if(lv_obj_get_parent(pageswitch) == motortemps) {
+		if(lv_tileview_get_tile_act(mainscreen) == motortemps) {
 			for(int m = 0; m < motorbar.size(); m++) {
 				lv_event_send(motorboxes[m], LV_EVENT_REFRESH, NULL);
 			}

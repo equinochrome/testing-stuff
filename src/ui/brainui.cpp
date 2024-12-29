@@ -9,6 +9,7 @@ int posnegstore = 0;
 int scrpage = 0;
 vector<jasauton> jautoncurated = {};
 bool noselection;
+bool pageside[2]{true, false};
 jas::jautontable j_auton_selector;
 
 jasauton::jasauton() {
@@ -38,11 +39,17 @@ void jautontable::jautonpopulate(std::vector<jasauton> JasAutonTable) {
 	jasautontable.assign(JasAutonTable.begin(), JasAutonTable.end());
 }
 
-lv_obj_t *autoselector = lv_obj_create(NULL);
-lv_obj_t *motortemps = lv_obj_create(NULL);
-lv_obj_t *autobuilder = lv_obj_create(NULL);
+static lv_style_t style;
+static lv_style_t stylebtn;
+static lv_style_t styleind;
+static lv_style_t styleswitch;
+
+lv_obj_t *mainscreen = lv_tileview_create(NULL);
+lv_obj_t *autoselector = lv_tileview_add_tile(mainscreen, 0, 0, LV_DIR_NONE);
+lv_obj_t *motortemps = lv_tileview_add_tile(mainscreen, 1, 0, LV_DIR_NONE);
+lv_obj_t *autobuilder = lv_tileview_add_tile(mainscreen, 2, 0, LV_DIR_NONE);
+lv_obj_t *manbuilder = lv_tileview_add_tile(mainscreen, 2, 1, LV_DIR_NONE);
 lv_obj_t *overlay = lv_img_create(autoselector);
-LV_IMG_DECLARE(brainuioverlay);
 lv_obj_t *autonselectup = lv_btn_create(autoselector);
 lv_obj_t *autonselectdown = lv_btn_create(autoselector);
 lv_obj_t *redblu = lv_switch_create(autoselector);
@@ -59,8 +66,10 @@ lv_obj_t *mogoring2 = lv_obj_create(autoselector);
 lv_obj_t *mogoringback1 = lv_obj_create(autoselector);
 lv_obj_t *mogoringback2 = lv_obj_create(autoselector);
 lv_obj_t *alliancering = lv_obj_create(autoselector);
-lv_obj_t *pageswitch = lv_btn_create(autoselector);
 lv_obj_t *ringind = lv_obj_create(autoselector);
+lv_obj_t *pageswitch;
+
+LV_IMG_DECLARE(brainuioverlay);
 
 vector<lv_color32_t> colortable = {lv_color_hex(0xff2a00), lv_color_hex(0x0066cc), lv_color_hex(0x5d5d5d), lv_color_hex(0x00b5bc),
 								   lv_color_hex(0xdb8826), lv_color_hex(0x5d5d5d), lv_color_hex(0x84f03b)};
@@ -120,7 +129,7 @@ static void selectauton(lv_event_t *e) {
 		lv_obj_set_style_bg_color(mogoring2, colortable[jautoncurated[selected].RedBluFilt], LV_PART_MAIN);
 		lv_obj_set_size(mogoringback2, 46, (78 - (13 * jautoncurated[selected].Mogo2)));
 		jautoncurated[selected].AllyRing == true ? lv_obj_add_flag(alliancering, LV_OBJ_FLAG_HIDDEN) : lv_obj_clear_flag(alliancering, LV_OBJ_FLAG_HIDDEN);
-		// jautonrun();  // comment this out
+		//jautonrun();  // comment this out
 	}
 }
 
@@ -142,9 +151,12 @@ static void updownbtn(lv_event_t *e) {
 lv_obj_t *screens[3]{autoselector, motortemps, autobuilder};
 
 static void pageswitchbtn(lv_event_t *e) {
-	scrpage = (scrpage + 1) % 3;
-	lv_scr_load(screens[scrpage]);
-	lv_obj_set_parent(pageswitch, lv_scr_act());
+	const bool *getside = (bool *)lv_event_get_user_data(e);
+	scrpage = *getside ? (scrpage + 1) % 3 : scrpage == 0 ? 2 : (scrpage - 1) % 3;
+	lv_obj_set_tile(mainscreen, screens[scrpage], LV_ANIM_ON);
+	lv_obj_set_parent(pageswitch, screens[scrpage]);
+	cout << lv_tileview_get_tile_act(mainscreen) << endl;
+	if(lv_tileview_get_tile_act(mainscreen) == autobuilder) cout << "yes" << endl;
 }
 
 lv_event_cb_t jautonCurate = jautoncurate;
@@ -153,41 +165,44 @@ lv_event_cb_t upDownBtn = updownbtn;
 lv_event_cb_t pageSwitchBtn = pageswitchbtn;
 
 void screeninit() {
-	static lv_style_t style;
 	lv_style_init(&style);
 	lv_style_set_border_width(&style, 0);
 	lv_style_set_radius(&style, 0);
 	lv_style_set_text_color(&style, lv_color_hex(0xcfffe9));
 	lv_style_set_bg_color(&style, lv_color_hex(0x071808));
 
-	static lv_style_t stylebtn;
 	lv_style_init(&stylebtn);
 	lv_style_set_border_width(&stylebtn, 2);
 	lv_style_set_radius(&stylebtn, 6);
 	lv_style_set_border_color(&stylebtn, lv_color_hex(0x071808));
+	lv_style_set_text_color(&stylebtn, lv_color_hex(0x071808));
 	lv_style_set_bg_color(&stylebtn, lv_color_hex(0xcfffe9));
+	lv_style_set_text_align(&stylebtn, LV_TEXT_ALIGN_CENTER);
+	lv_style_set_bg_opa(&stylebtn, 255);
 
-	static lv_style_t styleind;
 	lv_style_init(&styleind);
 	lv_style_set_border_width(&styleind, 0);
 	lv_style_set_radius(&styleind, 0);
 	lv_style_set_bg_color(&styleind, lv_color_hex(0x5d5d5d));
 
-	lv_img_set_src(overlay, &brainuioverlay);
+	lv_style_init(&styleswitch);
+	lv_style_set_border_width(&styleswitch, 3);
+	lv_style_set_outline_width(&styleswitch, 2);
+	lv_style_set_radius(&styleswitch, 16);
+	lv_style_set_border_color(&styleswitch, lv_color_hex(0x071808));
+	lv_style_set_outline_color(&styleswitch, lv_color_hex(0xcfffe9));
+
+	lv_img_set_src(overlay, &brainuioverlay);  //"S:brainuioverlay.bin"
 	lv_obj_move_foreground(overlay);
-	lv_scr_load(autoselector);
-	lv_obj_add_style(autoselector, &style, LV_PART_MAIN);
-	lv_obj_add_style(motortemps, &style, LV_PART_MAIN);
-	lv_obj_add_style(autobuilder, &style, LV_PART_MAIN);
+	lv_scr_load(mainscreen);
+	lv_obj_add_style(mainscreen, &style, LV_PART_MAIN);
+	lv_obj_set_scrollbar_mode(mainscreen, LV_SCROLLBAR_MODE_OFF);
 	lv_obj_set_size(autonselectup, 11, 58);
 	lv_obj_set_pos(autonselectup, 242, 50);
 	lv_obj_set_size(autonselectdown, 11, 58);
 	lv_obj_set_pos(autonselectdown, 242, 118);
-	lv_obj_set_size(pageswitch, 18, 18);
-	lv_obj_set_pos(pageswitch, 456, 6);
 	lv_obj_add_style(autonselectup, &stylebtn, LV_PART_MAIN);
 	lv_obj_add_style(autonselectdown, &stylebtn, LV_PART_MAIN);
-	lv_obj_add_style(pageswitch, &stylebtn, LV_PART_MAIN);
 	lv_obj_set_size(ringind, 117, 117);
 	lv_obj_set_pos(ringind, 345, 3);
 	lv_obj_set_size(mogoring1, 46, 78);
@@ -233,17 +248,28 @@ void screeninit() {
 	lv_obj_set_pos(jauton, 5, 60);
 	lv_obj_move_foreground(autonselectup);
 	lv_obj_move_foreground(autonselectdown);
-	lv_obj_move_foreground(pageswitch);
+	lv_obj_add_style(redblu, &styleswitch, LV_PART_INDICATOR | LV_STATE_DEFAULT); 
+	lv_obj_add_style(redblu, &styleswitch, LV_PART_INDICATOR | LV_STATE_CHECKED);
+	lv_obj_add_style(redblu, &styleswitch, LV_PART_KNOB);
+	lv_obj_set_style_pad_all(redblu, 0, LV_PART_KNOB);
+	lv_obj_set_style_pad_hor(redblu, 2, LV_PART_KNOB);
 	lv_obj_set_style_bg_color(redblu, lv_color_hex(0xff2a00), LV_STATE_DEFAULT);
-	lv_obj_set_style_bg_color(redblu, lv_color_hex(0x0066cc), LV_STATE_CHECKED);
+	lv_obj_set_style_bg_color(redblu, lv_color_hex(0x0066cc), LV_PART_INDICATOR | LV_STATE_CHECKED);
 	lv_obj_set_style_bg_color(redblu, lv_color_hex(0xcfffe9), LV_PART_KNOB);
 	lv_obj_set_size(redblu, 42, 20);
-	lv_obj_set_pos(redblu, 41, 10);
+	lv_obj_set_pos(redblu, 62, 10);
+	lv_obj_move_foreground(redblu);
+	lv_obj_add_style(posneg, &styleswitch, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+	lv_obj_add_style(posneg, &styleswitch, LV_PART_INDICATOR |LV_STATE_CHECKED);
+	lv_obj_add_style(posneg, &styleswitch, LV_PART_KNOB);
+	lv_obj_set_style_pad_all(posneg, 0, LV_PART_KNOB);
+	lv_obj_set_style_pad_hor(posneg, 2, LV_PART_KNOB);
 	lv_obj_set_style_bg_color(posneg, lv_color_hex(0x00b5bc), LV_STATE_DEFAULT);
-	lv_obj_set_style_bg_color(posneg, lv_color_hex(0xdb8826), LV_STATE_CHECKED);
+	lv_obj_set_style_bg_color(posneg, lv_color_hex(0xdb8826), LV_PART_INDICATOR | LV_STATE_CHECKED);
 	lv_obj_set_style_bg_color(posneg, lv_color_hex(0xcfffe9), LV_PART_KNOB);
 	lv_obj_set_size(posneg, 42, 20);
-	lv_obj_set_pos(posneg, 156, 10);
+	lv_obj_set_pos(posneg, 177, 10);
+	lv_obj_move_foreground(posneg);
 	lv_obj_set_size(negind, 66, 30);
 	lv_obj_set_pos(negind, 412, 197);
 	lv_obj_set_scrollbar_mode(negind, LV_SCROLLBAR_MODE_OFF);
@@ -258,11 +284,27 @@ void screeninit() {
 	lv_obj_add_style(autondesc, &style, LV_PART_MAIN);
 	lv_label_set_text(autondesc, "auton selection:");
 
-	lv_obj_add_event_cb(pageswitch, pageSwitchBtn, LV_EVENT_CLICKED, NULL);
 	lv_obj_add_event_cb(redblu, jautonCurate, LV_EVENT_CLICKED, NULL);
 	lv_obj_add_event_cb(posneg, jautonCurate, LV_EVENT_CLICKED, NULL);
 	lv_obj_add_event_cb(autonselectup, upDownBtn, LV_EVENT_CLICKED, NULL);
 	lv_obj_add_event_cb(autonselectdown, upDownBtn, LV_EVENT_CLICKED, NULL);
 	lv_obj_add_event_cb(jauton, selectAuton, LV_EVENT_VALUE_CHANGED, NULL);
 	lv_event_send(redblu, LV_EVENT_CLICKED, NULL);
+
+	tempcheck();
+	autonbuilderinit();
+	manualbuilderinit();
+
+	for(int i = 0; i < 4; i++) {
+		pageswitch = lv_img_create(screens[i % 3]);
+		lv_img_set_src(pageswitch, i < 3 ? LV_SYMBOL_RIGHT : LV_SYMBOL_LEFT);
+		lv_obj_set_size(pageswitch, 18, 18);
+		lv_obj_set_pos(pageswitch, i < 3 ? 456 : 6, 6);
+		lv_obj_add_style(pageswitch, &style, LV_PART_MAIN);
+		lv_obj_add_flag(pageswitch, LV_OBJ_FLAG_CLICKABLE);
+		lv_obj_set_style_text_opa(pageswitch, 128, LV_STATE_PRESSED);
+		lv_obj_move_foreground(pageswitch);
+		lv_obj_add_event_cb(pageswitch, pageSwitchBtn, LV_EVENT_CLICKED, &pageside[i < 3 ? 0 : 1]);
+		cout << i << endl;
+	}
 }
