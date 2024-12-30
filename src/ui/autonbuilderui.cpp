@@ -63,10 +63,10 @@ void updatepath() {
 	if(allianceringbuilder == true) modules.push_back("alliance stake");
 
 	if(usefinmogo1 > 0) {
-		modules.push_back(usegoalrush == true ? (useredblu == useposneg ? "regrab goal rush right" : "regrab goal rush left") :
-												(useredblu == useposneg ? "right mogo" : "left mogo"));
-		setside = !(useredblu == useposneg);
-		usemidtwo = useredblu == useposneg ? !setside : setside;
+		modules.push_back(usegoalrush == true ? (useredblu == useposneg ? "blue regrab goal rush" : "red regrab goal rush") :
+												(useredblu == useposneg ? "left mogo" : "right mogo"));
+		setside = useredblu == useposneg;
+		usemidtwo = useredblu == useposneg ? setside : !setside;
 		for(int ringscore = 0; ringscore < usefinmogo1 - (allianceringbuilder == true ? 0 : 1); ringscore++) {
 			if((finmogo1 - (allianceringbuilder == true ? 0 : 1)) % 2 == 0 && finmogo1 - (allianceringbuilder == true ? 0 : 1) != 0 && doublesiter < 3) {
 				if((useposneg == false || usemidtwo == false) && cornersiter < 2) {
@@ -95,9 +95,9 @@ void updatepath() {
 
 	if(usefinmogo2 > 0) {
 		modules.push_back("drop mogo");
-		modules.push_back((useredblu == useposneg) == usegoalrush ? "right mogo" : "left mogo");
-		setside = !(useredblu == useposneg) == usegoalrush;
-		usemidtwo = useredblu == useposneg ? !setside : setside;
+		modules.push_back((useredblu == useposneg) == usegoalrush ? "left mogo" : "right mogo");
+		setside = (useredblu == useposneg) == usegoalrush;
+		usemidtwo = useredblu == useposneg ? setside : !setside;
 		for(int ringscore = 0; ringscore < usefinmogo2; ringscore++) {
 			if((finmogo2) % 2 == 0 && finmogo2 != 0 && doublesiter < 3) {
 				if((useposneg == false || usemidtwo == false) && cornersiter < 2) {
@@ -186,7 +186,7 @@ static void getinfo(lv_event_t *e) {
 	lv_obj_set_style_text_font(lv_msgbox_get_title(autonbuildinfo), &lv_font_montserrat_20, LV_PART_MAIN);
 
 	lv_obj_align(autonbuildinfo, LV_ALIGN_CENTER, 0, 0);
-	// autonomous(); //comment this out
+	//autonomous(); //comment this out
 }
 
 lv_event_cb_t mogoPress = mogopress;
@@ -320,7 +320,7 @@ void autonbuilderinit() {
 }
 
 void autocallback() {
-	chassis.odom_pose_set({usegoalrush == true ? (useredblu == useposneg ? 120_in : 24_in) : (useredblu == useposneg ? 96_in : 48_in), 21_in,
+	chassis.odom_pose_set({usegoalrush == true ? (useredblu == useposneg ? 24_in : 120_in) : (useredblu == useposneg ? 48_in : 96_in), 21_in,
 						   usegoalrush == true ? 0_deg : 180_deg});
 	cout << util::to_string_with_precision(chassis.odom_x_get()) << endl;
 	ringsorting = pros::c::task_create(ringsensTask, useredblu ? (void *)"0" : (void *)"1", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "ring sorting");
@@ -331,9 +331,12 @@ void autocallback() {
 		else if(modules[module_it] == "alliance stake")
 			// cout << "alliancestake" << endl;
 			alliancestake();
-		else if(modules[module_it] == "regrab goal rush")
-			// cout << "gr_mogo" << endl;
-			gr_mogo();
+		else if(modules[module_it] == "blue regrab goal rush")
+			// cout << "blue_gr_mogo" << endl;
+			blue_gr_mogo();
+		else if(modules[module_it] == "red regrab goal rush")
+			// cout << "red_gr_mogo" << endl;
+			red_gr_mogo();
 		else if(modules[module_it] == "left mogo")
 			// cout << "left_mogo" << endl;
 			left_mogo();

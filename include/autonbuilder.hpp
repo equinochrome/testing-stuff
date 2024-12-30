@@ -9,8 +9,9 @@ void testautonbuilder();
 void goal_rush();
 void alliancestake();
 
+void blue_gr_mogo();
+void red_gr_mogo();
 void left_mogo();
-void gr_mogo();
 void right_mogo();
 
 void left_corner();

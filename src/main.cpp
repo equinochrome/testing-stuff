@@ -190,8 +190,6 @@ void autonomous() {
 			jautonrun();
 		}
 	}
-	scrpage = 2;
-	lv_event_send(pageswitch, LV_EVENT_CLICKED, NULL);
 	// ez::as::auton_selector.selected_auton_call();  // Calls selected auton from
 	// autonomous selector
 }
@@ -281,6 +279,8 @@ void ez_template_etxras() {
 void opcontrol() {
 	// This is preference to what you like to drive on
 	chassis.drive_brake_set(MOTOR_BRAKE_BRAKE);
+	scrpage = 2;
+	lv_event_send(pageswitch, LV_EVENT_CLICKED, NULL);
 
 	while(true) {
 		// Gives you some extras to make EZ-Template easier

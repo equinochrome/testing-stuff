@@ -33,7 +33,8 @@ pros::task_t ringsorting;
 vector<jas::autobuildermodules> getmodules{
 	jas::autobuildermodules("goal rush", "Use doinker to grab mogo at the intersection between alliances"),
 	jas::autobuildermodules("alliance stake", "Score on the alliance stake"),
-	jas::autobuildermodules("regrab goal rush", "Grab the goal rush mogo from where it was first dropped off"),
+	jas::autobuildermodules("blue regrab goal rush", "Grab the goal rush mogo from where it was first dropped off"),
+	jas::autobuildermodules("red regrab goal rush", "Grab the goal rush mogo from where it was first dropped off"),
 	jas::autobuildermodules("left mogo", "Grab the mogo on the left side of the field"),
 	jas::autobuildermodules("right mogo", "Grab the mogo on the right side of the field"),
 	jas::autobuildermodules("drop mogo", "Drop the currently held mogo, and stop running the intake"),
@@ -213,7 +214,7 @@ static void tableinfo(lv_event_t *e) {
 						  (color == 0 ? "red" :
 						   color == 1 ? "neutral" :
 										"blue"),
-						  startposition, positiontoggle ? "fwd" : "rev", manpath.c_str());
+						  startposition, positionorient ? "fwd" : "rev", manpath.c_str());
 
 	lv_obj_t *manpathinfo = lv_msgbox_create(NULL, "path info", lv_label_get_text(buf), NULL, true);
 	lv_obj_align(manpathinfo, LV_ALIGN_CENTER, 0, 0);
@@ -226,7 +227,7 @@ static void tableinfo(lv_event_t *e) {
 	lv_obj_set_style_text_font(lv_msgbox_get_close_btn(manpathinfo), &lv_font_montserrat_20, LV_PART_MAIN);
 	lv_obj_set_style_text_font(lv_msgbox_get_title(manpathinfo), &lv_font_montserrat_20, LV_PART_MAIN);
 	lv_obj_del(buf);
-	// autonomous(); //comment this out
+	//autonomous(); //comment this out
 }
 
 static void screenchange(lv_event_t *e) {
@@ -349,10 +350,6 @@ void manualbuilderinit() {
 	lv_obj_set_style_transform_height(positiontoggle, 2, LV_STATE_PRESSED);
 	lv_obj_set_style_transform_width(infobtn, 2, LV_STATE_PRESSED);
 	lv_obj_set_style_transform_height(infobtn, 2, LV_STATE_PRESSED);
-	lv_obj_set_style_transform_width(addmodule, 6, LV_STATE_PRESSED);
-	lv_obj_set_style_transform_height(addmodule, 6, LV_STATE_PRESSED);
-	lv_obj_set_style_transform_width(delmodule, 6, LV_STATE_PRESSED);
-	lv_obj_set_style_transform_height(delmodule, 6, LV_STATE_PRESSED);
 	lv_obj_set_style_pad_all(allianceslider, 0, LV_PART_KNOB);
 	lv_obj_set_style_pad_all(positionslider, 0, LV_PART_KNOB);
 	lv_obj_set_style_pad_all(manlistlabel, 3, LV_PART_MAIN);
@@ -432,37 +429,40 @@ void mancallback() {
 			// cout << "goal_rush" << endl;
 			goal_rush();
 		else if(manmodules[module_it].Name == "alliance stake")
-			//	cout << "alliancestake" << endl;
+			// cout << "alliancestake" << endl;
 			alliancestake();
-		else if(manmodules[module_it].Name == "regrab goal rush")
-			//	cout << "gr_mogo" << endl;
-			gr_mogo();
+		else if(manmodules[module_it].Name == "blue regrab goal rush")
+			// cout << "blue_gr_mogo" << endl;
+			blue_gr_mogo();
+		else if(manmodules[module_it].Name == "red regrab goal rush")
+			// cout << "red_gr_mogo" << endl;
+			red_gr_mogo();
 		else if(manmodules[module_it].Name == "left mogo")
-			//	cout << "left_mogo" << endl;
+			// cout << "left_mogo" << endl;
 			left_mogo();
 		else if(manmodules[module_it].Name == "right mogo")
-			//	cout << "right_mogo" << endl;
+			// cout << "right_mogo" << endl;
 			right_mogo();
 		else if(manmodules[module_it].Name == "left corner")
-			//	cout << "left_corner" << endl;
+			// cout << "left_corner" << endl;
 			left_corner();
 		else if(manmodules[module_it].Name == "right corner")
-			//	cout << "right_corner" << endl;
+			// cout << "right_corner" << endl;
 			right_corner();
 		else if(manmodules[module_it].Name == "red mid two")
-			//	cout << "red_ring_rush" << endl;
+			// cout << "red_ring_rush" << endl;
 			red_ring_rush();
 		else if(manmodules[module_it].Name == "blue mid two")
-			//	cout << "blue_ring_rush" << endl;
+			// cout << "blue_ring_rush" << endl;
 			blue_ring_rush();
 		else if(manmodules[module_it].Name == "left bottom ring")
-			//	cout << "left_btm_ring" << endl;
+			// cout << "left_btm_ring" << endl;
 			left_btm_ring();
 		else if(manmodules[module_it].Name == "mid top ring")
-			//	cout << "mid_top_ring" << endl;
+			// cout << "mid_top_ring" << endl;
 			mid_top_ring();
 		else if(manmodules[module_it].Name == "right bottom ring")
-			//	cout << "right_btm_ring" << endl;
+			// cout << "right_btm_ring" << endl;
 			right_btm_ring();
 		else if(manmodules[module_it].Name == "ladder")
 			// cout << "ladder" << endl;

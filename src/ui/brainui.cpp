@@ -155,8 +155,6 @@ static void pageswitchbtn(lv_event_t *e) {
 	scrpage = *getside ? (scrpage + 1) % 3 : scrpage == 0 ? 2 : (scrpage - 1) % 3;
 	lv_obj_set_tile(mainscreen, screens[scrpage], LV_ANIM_ON);
 	lv_obj_set_parent(pageswitch, screens[scrpage]);
-	cout << lv_tileview_get_tile_act(mainscreen) << endl;
-	if(lv_tileview_get_tile_act(mainscreen) == autobuilder) cout << "yes" << endl;
 }
 
 lv_event_cb_t jautonCurate = jautoncurate;
