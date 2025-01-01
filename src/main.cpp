@@ -25,7 +25,6 @@ ez::tracking_wheel horiz_tracker(10, 2.03856, -0.5);
 // list of motors to get temperature
 pros::Motor intake1(4);
 pros::Motor intake2(6);
-pros::Motor wallstake(21);
 pros::Motor driveleft1(-13);
 pros::Motor driveleft2(-14);
 pros::Motor driveleft3(-15);

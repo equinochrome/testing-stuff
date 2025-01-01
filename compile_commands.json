@@ -415,11 +415,11 @@
             "-funwind-tables",
             "--std=gnu11",
             "-o",
-            "bin/images/autonbuilderoverlay.c.o",
-            "src\\images\\autonbuilderoverlay.c"
+            "bin/images/brainuioverlay.c.o",
+            "src\\images\\brainuioverlay.c"
         ],
         "directory": "C:\\Users\\victo\\OneDrive\\Documents\\pringle-21S",
-        "file": "src\\images\\autonbuilderoverlay.c"
+        "file": "src\\images\\brainuioverlay.c"
     },
     {
         "arguments": [
@@ -532,10 +532,10 @@
             "-funwind-tables",
             "--std=gnu11",
             "-o",
-            "bin/images/brainuioverlay.c.o",
-            "src\\images\\brainuioverlay.c"
+            "bin/images/autonbuilderoverlay.c.o",
+            "src\\images\\autonbuilderoverlay.c"
         ],
         "directory": "C:\\Users\\victo\\OneDrive\\Documents\\pringle-21S",
-        "file": "src\\images\\brainuioverlay.c"
+        "file": "src\\images\\autonbuilderoverlay.c"
     }
 ]
