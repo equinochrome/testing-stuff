@@ -1,1 +1,1 @@
-# 21S Code for High Stakes robot Pringle!
+i wanted to test the auto thinyamabobr
